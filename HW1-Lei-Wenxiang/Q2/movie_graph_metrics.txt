@@ -1,0 +1,11 @@
+Average node degree: 2.105
+Diameter of the graph: 6	
+Average path length: 1.682
+
+In my opinion, average node degree is the average number of nodes connected to each node. It shows how densely the nodes are connected to each other. Diameter of the graph is the longest graph distance between any two nodes in the network. It shows how far apart are the two most distant nodes. The average path length is the average length of path from one node to another. It indicates the average distance from one node to another. 
+
+The Wolf of Wall Street   106646	
+A Beautiful Mind          453
+The Shawshank Redemption  278	
+Rebecca                   223
+The Cobbler               238215     

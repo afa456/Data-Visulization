@@ -1,0 +1,1 @@
+In layout I used Force Atlas, set repulsion strength to 350 and gravity set 10. Selected 'Attraction Distrib.' and 'Adjust by Sizes'. The size of nodes are set by degrees ranking. The nodes are also partitioned by modularity classes and colored according to it.

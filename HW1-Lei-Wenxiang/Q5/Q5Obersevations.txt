@@ -1,0 +1,10 @@
+¢ñ.
+There are a lot of missing values, question marks, different abbreviations for the same words, uppercase and lowercase for same word and foreign languages appear. And some word may get confused in meaning. Also, there are plenty of values that have only one or two in count.   
+
+
+¢ó. 
+nominal data: id
+ordinal data: status
+
+¢õ.
+The function 'Split into several columns' under 'Edit column' can be applied to column 'name' so that we can extract the first name and last name, even middle name.  

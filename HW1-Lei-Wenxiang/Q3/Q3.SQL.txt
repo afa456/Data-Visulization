@@ -1,0 +1,28 @@
+create table movies(id integer, name text, score integer);
+create table moviecast(movie_id integer, cast_id integer, cast_name text);
+.separator ¡°,¡±
+.mode csv
+.import movie-name-score.txt movies
+.import movie-cast.txt moviecast
+select null;
+create index movies_name_index on movies (name);
+create index movies_score_index on movies(score);
+select null;
+select avg(score) as average_score from movies where score>=80; 
+select null;
+select* from(select * from (select id, name, score from movies where score>50 order by score )id limit 0,8)order by name;
+select null;
+select * from(select cast_id, cast_name, count(*) from moviecast group by cast_id having count(*)==3 order by cast_name)id limit 10;
+select null;
+select * from(select cast_id, cast_name, avg(score) from moviecast inner join movies on moviecast.movie_id=movies.id where score>=50 group by cast_id having count(movies.id)>=3 order by avg(score) desc, cast_name)id limit 10;
+select null;
+create view good_collaboration as select ci1, ci2, avg(score) as avgs, count(mid) from(select m.id as mid, m.score as score, mc.ci1 as ci1, mc.ci2 as ci2 from movies as m inner join (select mca.cast_id as ci1, mcb.cast_id as ci2, mca.movie_id from moviecast as mca cross join moviecast as mcb on mca.movie_id=mcb.movie_id) as mc on m.id=mc.movie_id where not mc.ci1=mc.ci2)a group by ci1, ci2 having avg(score)>=75 and count(mid)>=3;
+select null;
+select*from(select gc.ci1, moviecast.cast_name, avg(gc.avgs) from good_collaboration as gc inner join moviecast on gc.ci1=moviecast.cast_id group by gc.ci1 order by avg(avgs) desc) limit 5;
+select null;
+create virtual table movie_overview using fts3 (id integer, name text, year integer, overview text, popularity decimal);
+.mode csv
+.import movie-overview.txt movie_overview
+select count(*) from movie_overview where overview match 'good OR bad';
+select null;
+select id from movie_overview where overview match 'life NEAR/5 about';

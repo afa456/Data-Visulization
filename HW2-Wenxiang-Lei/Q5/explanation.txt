@@ -1,0 +1,1 @@
+I created scatterplot for each school. The x-axis stand for out state tuition fee and y-axis for in state. This graph to help students make college decisions. The size is porportional to the log number of one-year. If you hover over the circle it tells you the school name and actual tuition fee.

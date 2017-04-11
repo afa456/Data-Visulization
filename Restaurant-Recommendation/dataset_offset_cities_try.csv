@@ -1,0 +1,3 @@
+name,rating,review_count,latitude,longitude,postal_code,menu_data_updated,categories,City,State
+Aviva by Kameel,5.0,572,33.7596640198116,-84.3875961619019,30303,1460112669,"Category(name=u'Bar \xe0 jus de fruits & smoothies', alias=u'juicebars')",Atlanta,GA
+Neighborhood Eats,5.0,155,33.8043523704008,-84.3931704623732,30309,1460204179,"Category(name=u'Petit d\xe9jeuner & brunch', alias=u'breakfast_brunch')",Atlanta,GA

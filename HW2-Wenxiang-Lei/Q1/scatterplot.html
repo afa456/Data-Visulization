@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scatterplot</title>
+    <script type="text/javascript" src="../lib/d3/d3.v3.min.js"></script>
+    <style type="text/css"></style>
+        <style type="text/css">
+            
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+
+        </style>
+    </head>
+<body>
+<script type="text/javascript">
+
+
+    
+
+        var margin = {
+                top: 50, 
+				right: 40, 
+				bottom: 50, 
+				left: 40
+            };
+
+        var width = 1000 - margin.left - margin.right;
+        
+        var height = 700 - margin.top - margin.bottom;
+        
+        var xmax=10;
+
+        var ymax=1200;
+
+        var rectlength=10;
+
+        d3.csv("ForestFires.csv", function(error, data) {
+            console.log(data);
+            
+        var xscale = d3.scale.linear()
+            .domain([0,xmax])
+            .range([0, width]);
+
+        var yscale = d3.scale.log()
+            .domain([0.1,ymax])
+            .range([height,0]);
+
+
+        var xAxis = d3.svg.axis()
+            .scale(xscale)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(yscale)
+            .orient("left");
+
+        var gcolor=d3.scale.category20();
+
+            var svg = d3.select("body")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            svg.selectAll("cycle")
+                .data(data)
+                .enter()
+				.append("g")
+                .append("circle")
+                .attr("cx", 0)
+                .attr("cy", 0)
+                .attr("r", function(d){
+                    return Math.sqrt(d.area)
+                })
+                .attr("fill", function(d) {
+                     if(d.month=="jan") return gcolor(0);
+                     if(d.month=="feb") return gcolor(1);
+                     if(d.month=="mar") return gcolor(2);
+					 if(d.month=="apr") return gcolor(3);
+					 if(d.month=="may") return gcolor(4);
+					 if(d.month=="jun") return gcolor(5);
+					 if(d.month=="jul") return gcolor(6);
+					 if(d.month=="aug") return gcolor(7);
+					 if(d.month=="sep") return gcolor(8);
+					 if(d.month=="oct") return gcolor(9);
+					 if(d.month=="nov") return gcolor(10);
+					 if(d.month=="dec") return gcolor(11);
+                })
+                .attr("transform", function(d) {
+                    return "translate(" + xscale(d.wind) + "," + yscale(d.area) + ")";
+                });
+              
+                
+				// scale(" +Math.sqrt(y(d.sepalLength))*.1+ ")	
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .append("text")
+                .attr("class", "label")
+                .attr("x", width)
+                .attr("y", -6)
+                .style("text-anchor", "end")
+                .text("Wind speed(km/h)");
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .attr("transform", "translate(0,0)")
+                .call(yAxis)
+                .append("text")
+                .attr("class", "label")
+                .attr("transform", "rotate(-90)")
+                .attr("x", 6)
+                .attr("y", 20)
+                .style("text-anchor", "end")
+                .text("Brunt area (hect)")
+
+            var ldata=[[800,70],[800,80],[800,90],[800,100],[800,110],[800,120],[800,130],[800,140],[800,150],[800,160],[800,170],[800,180]]
+            
+            var legend = svg.selectAll(".legend")
+                .data(ldata)
+                .enter()
+                .append("g")
+                .attr("class", "legend")
+                .append("rect") 
+                .attr("x", function(d){
+                    return d[0];
+                })
+                .attr("y", function(d){
+                    return d[1];
+                })          
+                .attr("width", 8)
+                .attr("height", 8)
+                .style("fill", function(d,i) {
+                     if(i==0) return gcolor(0);
+                     if(i==1) return gcolor(1);
+                     if(i==2) return gcolor(2);
+                     if(i==3) return gcolor(3);
+                     if(i==4) return gcolor(4);
+                     if(i==5) return gcolor(5);
+                     if(i==6) return gcolor(6);
+                     if(i==7) return gcolor(7);
+                     if(i==8) return gcolor(8);
+                     if(i==9) return gcolor(9);
+                     if(i==10) return gcolor(10);
+                     if(i==11) return gcolor(11);
+                })
+                
+                svg.selectAll(".textlegend")
+                .data(ldata)
+                .enter()
+                .append('text')
+                .attr("x", function(d){
+                    return d[0]+15;
+                })
+                .attr("y", function(d){
+                    return d[1]+8;
+                })  
+                .attr("font-size", "12px")
+                .text(function(d,i) {
+                     if(i==0) return "jan";
+                     if(i==1) return "feb";
+                     if(i==2) return "mar";
+                     if(i==3) return "apr";
+                     if(i==4) return "may";
+                     if(i==5) return "jun";
+                     if(i==6) return "jul";
+                     if(i==7) return "aug";
+                     if(i==8) return "sep";
+                     if(i==9) return "oct";
+                     if(i==10) return "nov";
+                     if(i==11) return "dec";
+                });
+        });
+    
+
+
+
+</script>
+
+
+
+
+</body></html>

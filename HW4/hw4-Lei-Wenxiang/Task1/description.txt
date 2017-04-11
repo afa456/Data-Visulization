@@ -1,0 +1,5 @@
+For the initial tree, I calculate entropy and information gain for every attribute and choose the attribute with largest information gain to split the set. For every attribute, I search every unique value and find the optimal point to split. The stopping criteria is stopping constructing tree when the depth is reach to 8.
+
+With 10-fold cross-validation, accuracy is 0.7883.
+
+To improve my model, I implemented the majority vote function. I also let the choose feature value just choose 25 random value for a certain feature list, this could make the random forest run a much more faster.

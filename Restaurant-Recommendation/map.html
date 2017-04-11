@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+<style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+      .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      .pac-container {
+        font-family: Roboto;
+      }
+
+      #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+      }
+
+      #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=places&sensor=false"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<body>
+    <p>
+    <input class="checkbox" id="Dial-a-Ride" name="Dial-a-Ride" type="checkbox" value="Dial-a-Ride" />
+    <label for="Dial-a-Ride">Dial-a-Ride</label>
+    <input class="checkbox" id="American Legion" name="American Legion" type="checkbox" value="American Legion" />
+    <label for="American Legion">American Legion</label>
+    <input class="checkbox" id="Veterans of Foreign Wars" name="Veterans of Foreign Wars" type="checkbox" value="Veterans of Foreign Wars" />
+    <label for="Veterans of Foreign Wars">Veterans of Foreign Wars</label>
+    <input class="checkbox" id="Nutrition" name="Nutrition" type="checkbox" value="Nutrition" />
+    <label for="Nutrition">Nutrition</label>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id="map" style="width:1000px;height:680px;"></div>
+<script>
+
+    var mapOptions = {
+        zoom: 11,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        center: new google.maps.LatLng(33.7489954,-84.3879824)
+    };
+
+        map = new google.maps.Map(document.getElementById("map"),mapOptions);
+        
+        var bounds = new google.maps.LatLngBounds();
+        var infowindow = new google.maps.InfoWindow();
+        
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+        var markers = [];
+        var gmarkers = [];
+        var icon = { url: 'http://bepoz.com.au/wp-content/uploads/2014/09/cafe_icon.png',
+                scaledSize: new google.maps.Size(33,33)
+                       };         
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        //以下是searchbox的内容
+        searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+         markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+
+          //markers = [];
+          
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              title: place.name,
+              position: place.geometry.location
+            }));
+            latt = place.geometry.location.lat()
+            lntt = place.geometry.location.lng()
+          });
+          //map.fitBounds(bounds);
+
+    
+        //读取csv文件
+        d3.json("dataset.json", function(error, data) {
+        var poi = eval(data);       
+        gmarkers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+        var Restaurant=[];
+        for(i=0; i<poi.length;i++){
+              //console.log(poi[i].longitude-lntt);
+              //console.log(Math.abs(poi[i].latitude - latt))
+            if((Math.pow((poi[i].latitude - latt),2)+ Math.pow((poi[i].longitude - lntt),2)) <= 0.0003 ) {
+              Restaurant.push(poi[i]);
+            }
+        }
+       //这部分好像有点问题
+        Restaurant.sort(function (a, b) {
+          if (a.rating < b.rating) {
+            return 1;
+          }
+          if (a.rating > b.rating) {
+            return -1;
+          }
+        });        
+
+        //Restaurant.rating.sort(function(a, b){return b-a});
+
+/*
+        var p={ "places":[]};
+        data.forEach(function (d) {
+          
+          
+
+          if (d.City=="Altanta"){
+            p.places.push({"name": d["name"], "rating": d["rating"], "latitude": d["latitude"], "longitude": d["longitude"], "zipcode": d["postal_code"]});         
+
+
+                    //graph.links.push({ "source": d["Origin"], "target": d["Country / territory of asylum/residence"], "value": d["Total Population"]});
+            }
+
+
+        });
+        var places=[]
+        for(i=0; i<50;i++){
+            places.push(new google.maps.LatLng(Restaurant[i].latitude, Restaurant[i].longitude));
+        }
+           console.log(places);*/
+
+
+        //var places = {"nodes" : [], "links" : []};
+
+
+        //places.push(new google.maps.LatLng(33.75966, -84.387596));
+        //places.push(new google.maps.LatLng(33.7480784, -84.4050754));
+        //places.push(new google.maps.LatLng(33.768452, -84.3822579));
+
+        /*if (logic != 0) {
+          for(i=0; i<gmarkers.length; i++){
+            gmarkers[i].setMap(null);
+          }
+        }*/
+
+        for(i=0; i<20;i++){//地图只显示一半的i？
+
+            //var rate = Restaurant[i].rating
+            //console.log(rate);
+
+            var marker= new google.maps.Marker({position:new google.maps.LatLng(Restaurant[i].latitude, 
+                                                 Restaurant[i].longitude),
+                                              map: map,
+                                              animation: google.maps.Animation.DROP,
+                                              icon: icon
+                                             });
+            gmarkers.push(marker);
+            bounds.extend(marker.getPosition());
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infowindow.setContent('Name：'+ Restaurant[i].name+'<br/>'+'Rating：'+ Restaurant[i].rating);// 待完善
+                    infowindow.open(map, marker);
+                }
+            })(marker, i));
+    }
+     map.fitBounds(bounds);
+  })
+});
+</script> 
+</body>
+</html>

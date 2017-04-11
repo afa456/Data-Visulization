@@ -1,0 +1,1 @@
+b. I created a table of origin and destination country. I added the color gradient for number of refugees in 2005 with red being the largest and gray being the smallest. d. I created a table in tableau with the age/sex as the x. It is easy to see given a country, how the distribution of people of different ages and different sex looks like.

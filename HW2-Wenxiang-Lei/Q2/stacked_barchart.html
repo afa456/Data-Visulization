@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scatterplot</title>
+    <script type="text/javascript" src="../lib/d3/d3.v3.min.js"></script>
+    <style type="text/css">
+            
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+            
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+
+        </style>
+</head>
+<body>
+<script type="text/javascript">
+        
+        var width = 700;
+        
+        var height = 500;
+        
+        var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width",width)
+                    .attr("height",height)
+
+        var dataset = [  
+        { year: "2007" ,   
+          numbers: [{ district:"Bajhang", teachers: 1875 },  
+                { district:"Dadeldhura", teachers: 1261 },  
+                { district:"Arghakhanchi", teachers: 2063 },  
+                { district:"Darchula", teachers: 1382 },
+                { district:"Chitwan", teachers: 1527 },
+                { district:"Panchthar", teachers: 2096 }, 
+                { district:"Sindhupalchok", teachers: 1802 }, 
+                { district:"Udayapur", teachers: 1924 },   
+                { district:"Mugu", teachers: 468 }]},  
+        { year: "2008" , 
+          numbers: [{ district:"Bajhang", teachers: 2011 },  
+                { district:"Dadeldhura", teachers: 1419 },  
+                { district:"Arghakhanchi", teachers: 1859 },  
+                { district:"Darchula", teachers: 1483 },
+                { district:"Chitwan", teachers: 4468 },
+                { district:"Panchthar", teachers: 2063 }, 
+                { district:"Sindhupalchok", teachers: 2699 }, 
+                { district:"Udayapur", teachers: 2230 },   
+                { district:"Mugu", teachers: 486 }]},   
+        { year: "2009" ,
+          numbers: [{ district:"Bajhang", teachers: 2284 },  
+                { district:"Dadeldhura", teachers: 1702 },  
+                { district:"Arghakhanchi", teachers: 2284 },  
+                { district:"Darchula", teachers: 1505 },
+                { district:"Chitwan", teachers: 4634 },
+                { district:"Panchthar", teachers: 2173 }, 
+                { district:"Sindhupalchok", teachers: 2699 }, 
+                { district:"Udayapur", teachers: 2230 },   
+                { district:"Mugu", teachers: 486 }]},  
+        { year: "2010" ,
+          numbers: [{ district:"Bajhang", teachers: 3066 },  
+                { district:"Dadeldhura", teachers: 2021 },  
+                { district:"Arghakhanchi", teachers: 2365 },  
+                { district:"Darchula", teachers: 1838 },
+                { district:"Chitwan", teachers: 6488 },
+                { district:"Panchthar", teachers: 3177 }, 
+                { district:"Sindhupalchok", teachers: 3201 }, 
+                { district:"Udayapur", teachers: 2908 },   
+                { district:"Mugu", teachers: 589 }]},  
+        { year: "2011" ,  
+          numbers: [{ district:"Bajhang", teachers: 3104 },  
+                { district:"Dadeldhura", teachers: 2061 },  
+                { district:"Arghakhanchi", teachers: 2535 },  
+                { district:"Darchula", teachers: 1957 },
+                { district:"Chitwan", teachers: 6488 },
+                { district:"Panchthar", teachers: 3184 }, 
+                { district:"Sindhupalchok", teachers: 3460 }, 
+                { district:"Udayapur", teachers: 2988 },   
+                { district:"Mugu", teachers: 682 }]},   
+        ];  
+
+        var stack = d3.layout.stack()
+                    .values(function(d){ return d.numbers; })
+                    .x(function(d){ return d.district; })
+                    .y(function(d){ return d.teachers; });
+
+        var data = stack(dataset); 
+         
+        console.log(data);  
+        
+        var margin = {
+                top: 30, 
+                right: 80, 
+                bottom: 30, 
+                left: 50
+            };
+            
+        var xWidth = width - margin.left - margin.right;  
+          
+        var xScale = d3.scale.ordinal()
+                   .domain(data[0].numbers.map(function(d){
+                    return d.district;
+                   }))
+                   .rangeBands([0,xWidth],0.3);
+
+        var maximum = d3.max(data[data.length-1].numbers,function(d){
+            return d.y0+d.y;});  
+
+        var yWidth = height - margin.top - margin.bottom;  
+  
+        var yScale = d3.scale.linear()  
+                .domain([0, maximum])     
+                .range([0, yWidth]); 
+
+        var dcolor = d3.scale.category20c();  
+  
+ 
+        var groups = svg.selectAll("g")  
+                    .data(data)  
+                    .enter()  
+                    .append("g")  
+                    .style("fill",function(d,i){ 
+                        return dcolor(i); 
+                    });  
+
+        var rects = groups.selectAll("rect")  
+                    .data(function(d){ return d.numbers;})  
+                    .enter()  
+                    .append("rect")  
+                    .attr("x",function(d){ return xScale(d.district); })  
+                    .attr("y",function(d){ return yWidth - yScale( d.y0 + d.y );})  
+                    .attr("width",function(d){ return xScale.rangeBand();})  
+                    .attr("height",function(d){ return yScale(d.y);})  
+                    .attr("transform","translate(" + margin.left + "," + margin.top + ")"); 
+        
+        var xAxis = d3.svg.axis()
+                   .scale(xScale)
+                   .orient("bottom");
+        
+        yScale.range([yWidth, 0]);
+    
+        var yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .orient("left");
+                    
+        svg.append("g")
+            .attr("class","axis")
+            .attr("transform","translate(" + margin.left + "," + (height - margin.bottom) +  ")")
+            .call(xAxis);
+                
+        svg.append("g")
+            .attr("class","axis")
+            .attr("transform","translate(" + margin.left + "," + (height - margin.bottom - yWidth) +  ")")
+            .call(yAxis);
+
+        var legendH = 50;  
+        var legendR = 10;  
+      
+        var legendCircle = groups.append("circle")  
+                        .attr("cx",function(d){   
+                         return width - margin.right*0.98;   
+                        })  
+                        .attr("cy",function(d,i){   
+                        return margin.top * 2 + legendH * i;   
+                        })  
+                        .attr("r",legendR);  
+                      
+        var legendText = groups.append("text")  
+                        .attr("x",function(d){   
+                        return width - margin.right*0.8;   
+                        })  
+                        .attr("y",function(d,i){   
+                        return margin.top * 2 + legendH * i;   
+                        })  
+                        .attr("dy",legendR/2)  
+                        .text(function(d){ return d.year; });   
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+

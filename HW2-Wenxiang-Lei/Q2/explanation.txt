@@ -1,0 +1,1 @@
+For Q2, I randomly select 9 district data by hand, and put it in the html file call dataset. I use d3.layout.stack() to create the stacked barchart. And use d3.scale.category20c() to give each year different color scale. I also append the circle legend in the right top side.

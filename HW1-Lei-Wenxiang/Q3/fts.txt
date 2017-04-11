@@ -1,0 +1,1 @@
+Full Text Searching(FTS) will be more efficient than SQL LIKE quiry. Because it will benefit from an index of words that it will use to look up the records, whereas using LIKE is going to need to full table scan. 
